@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <title>WebMIDI Test</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+
+<body>
+<div id="disp1">
+Inputs
+<br><br></div>
+<br><br><br>
+<div id="disp2">
+Outputs
+<br><br></div>
+
+<script type="text/javascript">
+
+var disp1 = document.getElementById("disp1");
+var disp2 = document.getElementById("disp2");
+function br() {
+    return document.createElement('br');
+}
+
+var audio_context = window.AudioContext || window.webkitAudioContext;
+ var con = new audio_context();
+
+// request MIDI access
+if (navigator.requestMIDIAccess) {
+    navigator.requestMIDIAccess({
+        sysex: false
+    }).then(onMIDISuccess, onMIDIFailure);
+} else {
+    alert("No MIDI support in your browser.");
+}
+
+// midi functions
+function onMIDISuccess(midiAccess) {
+
+	listInputsAndOutputs( midiAccess );
+	midi = midiAccess; // this is our raw MIDI data, inputs, outputs, and sysex status
+    var inputs = midi.inputs.values();
+	// loop over all available inputs and...
+    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+  }
+}
+
+function listInputsAndOutputs( midiAccess ) {
+  for (var entry of midiAccess.inputs) {
+    var input = entry[1];
+    console.log( "Input port [type:'" + input.type + "'] id:'" + input.id +
+      "' manufacturer:'" + input.manufacturer + "' name:'" + input.name +
+      "' version:'" + input.version + "'" );
+  var text1 = "Input port [type:'" + input.type + "'] id:'" + input.id +
+      "' manufacturer:'" + input.manufacturer + "' name:'" + input.name +
+      "' version:'" + input.version + "'";
+  var textNode1 = document.createTextNode(text1);
+  disp1.appendChild(textNode1);
+  disp1.appendChild(br());
+  disp1.appendChild(br());
+  }
+
+  for (var entry of midiAccess.outputs) {
+    var output = entry[1];
+    console.log( "Output port [type:'" + output.type + "'] id:'" + output.id +
+      "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
+      "' version:'" + output.version + "'" );
+
+  var text2 = "Output port [type:'" + output.type + "'] id:'" + output.id +
+      "' manufacturer:'" + output.manufacturer + "' name:'" + output.name +
+      "' version:'" + output.version + "'";
+  var textNode2 = document.createTextNode(text2);
+  disp2.appendChild(textNode2);
+  disp2.appendChild(br());
+  disp2.appendChild(br());
+  }
+}
+
+function onMIDIFailure(e) {
+    // when we get a failed response, run this code
+    console.log("No access to MIDI devices or your browser doesn't support WebMIDI API. Please use WebMIDIAPIShim " + e);
+}
+
+
+
+</script>
+</body>
+</html>
